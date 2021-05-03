@@ -5,6 +5,8 @@
 //  github: camachodejay
 //  date:   2021 - 04 - 26
 //  current address: Centre for cellular imaging - Göteborgs universitet
+#@ File(label="Select file to analyze", style="open") im_dir
+#@ String(label="Channels and order", choices={"RGB", "RG"}, style="radioButtonHorizontal") channel_order
 
 // clean up first
 // close all images
@@ -17,104 +19,105 @@ run("Clear Results");
 setOption("BlackBackground", true);
 
 
-// ask for image file
-im_dir = File.openDialog("Select the image file");
+
+// open image
 open(im_dir);
-// open("E:/PROJECTS/CCI/Simon_mitochondria/Sample_control/Replicate_2/5_SC_FA_stack1.czi");
 data = File.nameWithoutExtension;
 d_path = File.directory;
-
-out_path = d_path + data + "_out" + File.separator; 
+getDimensions(width, height, channels, slices, frames)
 rename(data);
+
+blue = "Blue";
+red = "Red";
+//seeds = "seeds";
+mask = "segmentation";
+
+// create output folder
+out_path = d_path + data + "_out" + File.separator; 
 File.makeDirectory(out_path);
 
-selectWindow(data);
-blue = "Blue";
-run("Duplicate...", "title="+ blue +" duplicate channels=3");
-getVoxelSize(width, height, depth, unit);
 
-selectWindow(data);
-red = "Red";
-run("Duplicate...", "title="+ red +" duplicate channels=1");
+if ( channel_order == "RGB" && channels == 3) {
+	print("ok");
 
-f_idx = findFocus(blue, "intensity", false);
+	// extract blue
+	selectWindow(data);
+	run("Duplicate...", "title="+ blue +" duplicate channels=3");
 
-selectWindow(blue);
-setSlice(f_idx);
-resetMinAndMax();
-run("Enhance Contrast", "saturated=0.35");
+	// extract red
+	selectWindow(data);
+	run("Duplicate...", "title="+ red +" duplicate channels=1");
 
-selectWindow(red);
-setSlice(f_idx);
-resetMinAndMax();
-run("Enhance Contrast", "saturated=0.35");
+	// find focus using blue channel
+	f_idx = findFocus(blue, "intensity", false);
+
+	// enhance contrast blue
+	enhance_contrast(blue, f_idx, 0.35);
+
+	// enhance contrast red
+	enhance_contrast(red, f_idx, 0.35);
+
+	red_mask = run_segmentation(red, 4);
+	blue_mask = run_segmentation(blue, 4);
+
+	imageCalculator("OR create stack", blue_mask, red_mask);
+	rename("Combined_mask");
+
+	close(red);
+	close(blue);
+
+	save_and_close("Red_grad", out_path, "Red_gradient.tif");
+	save_and_close("Blue_grad", out_path, "Blue_gradient.tif");
+	save_and_close(red_mask, out_path, "Red_mask.tif");
+	save_and_close(blue_mask, out_path, "Blue_mask.tif");
+
+	selectWindow("Combined_mask");
+	rename(mask);
 
 
+} else if ( channel_order == "RG" && channels == 2) {
+	print("got it");
 
-red_mask = run_segmentation(red, 4);
-blue_mask = run_segmentation(blue, 4);
+	// extract red
+	selectWindow(data);
+	run("Duplicate...", "title="+ red +" duplicate channels=1");
 
-imageCalculator("OR create stack", blue_mask, red_mask);
-rename("Combined_mask");
+	// find focus using red channel
+	f_idx = findFocus(red, "intensity", false);
 
-close(red);
-close(blue);
+	// enhance contrast red
+	enhance_contrast(red, f_idx, 0.35);
 
-selectWindow("Red_grad");
-saveAs("Tiff", out_path + "Red_gradient.tif");
-close("Red_gradient.tif");
+	red_mask = run_segmentation(red, 4);
 
-selectWindow("Blue_grad");
-saveAs("Tiff", out_path + "Blue_gradient.tif");
-close("Blue_gradient.tif");
+	close(red);
+	
+	save_and_close("Red_grad", out_path, "Red_gradient.tif");
 
-selectWindow(red_mask);
-saveAs("Tiff", out_path + "Red_mask.tif");
-close("Red_mask.tif");
+	
+	selectWindow(red_mask);
+	run("Duplicate...", "title="+ mask +" duplicate");
+	save_and_close(red_mask, out_path, "Red_mask.tif");
 
-selectWindow(blue_mask);
-saveAs("Tiff", out_path + "Blue_mask.tif");
-close("Blue_mask.tif");
+	
+} else {
+	exit("error message");
+}
 
-seeds = "seeds";
-mask = "Combined_mask";
-selectWindow(mask);
-mask = "segmentation";
-rename(mask);
 
-run("Morphological Filters (3D)", "operation=Erosion element=Ball x-radius=4 y-radius=4 z-radius=2");
-rename(seeds);
-run("Morphological Filters (3D)", "operation=Opening element=Ball x-radius=7 y-radius=7 z-radius=3");
-close(seeds);
-selectWindow(seeds + "-Opening");
-rename(seeds);
-
+// save mask
 selectWindow(mask);
 saveAs("Tiff", out_path + "Segmentation.tif");
 rename(mask);
 
-selectWindow(seeds);
-saveAs("Tiff", out_path + "Seeds_auto.tif");
-saveAs("Tiff", out_path + "Seeds.tif");
-rename(seeds);
-
-exit
+// we get the seeds and save them in the output folder
+seeds = get_and_save_seeds(mask, out_path);
 
 
-lab = "Labels";
-run("3D Watershed Split", "binary="+mask+" seeds="+seeds+" radius=2");
-selectWindow("EDT");
-close();
-selectWindow("Split");
-rename(lab);
-
-selectWindow(lab);
-run("Set Label Map", "colormap=[Golden angle] background=Black shuffle");
-//run("Sync Windows");
-setVoxelSize(width, height, depth, unit);
+// generate labels
+lab = watershed_via_seeds(mask, seeds);
 run("Select None");
 saveAs("Tiff", out_path + "Labels.tif");
-
 
 
 exit
@@ -307,3 +310,61 @@ function stackIntensity(window_title) {
 
 }
 
+function enhance_contrast(window_title, focus_idx, saturation) { 
+// function description
+	selectWindow(window_title);
+	setSlice(focus_idx);
+	resetMinAndMax();
+	run("Enhance Contrast", "saturated=" + saturation);
+
+}
+
+
+function save_and_close(window_title, folder2use, tif_title){
+
+	selectWindow(window_title);
+	saveAs("Tiff", folder2use + tif_title);
+	close(tif_title);
+}
+
+
+function get_and_save_seeds(mask, folder2use) { 
+	seeds_str = "seeds";
+	// generate seeds
+	selectWindow(mask);
+	run("Morphological Filters (3D)", "operation=Erosion element=Ball x-radius=4 y-radius=4 z-radius=2");
+	rename(seeds_str);
+
+	run("Morphological Filters (3D)", "operation=Opening element=Ball x-radius=7 y-radius=7 z-radius=3");
+	close(seeds_str);
+
+	
+	selectWindow(seeds_str + "-Opening");
+	rename(seeds_str);
+	
+	// save seeds
+	selectWindow(seeds_str);
+	saveAs("Tiff", folder2use + "Seeds_auto.tif");
+	saveAs("Tiff", folder2use + "Seeds.tif");
+	rename(seeds_str);
+	return seeds_str;
+
+}
+
+function watershed_via_seeds(mask, seeds) { 
+	// generate labels
+	selectWindow(mask);
+	getVoxelSize(width, height, depth, unit);
+	
+	lab_str = "Labels";
+	run("3D Watershed Split", "binary="+mask+" seeds="+seeds+" radius=2");
+	selectWindow("EDT");
+	close();
+	selectWindow("Split");
+	rename(lab_str);
+
+	selectWindow(lab_str);
+	run("Set Label Map", "colormap=[Golden angle] background=Black shuffle");
+	setVoxelSize(width, height, depth, unit);
+	return lab_str;
+}
