@@ -17,7 +17,7 @@ roiManager("reset");
 run("Clear Results");
 // configure that binary image are black in background, objects are white
 setOption("BlackBackground", true);
-
+print("\\Clear");
 
 
 // open image
@@ -38,7 +38,8 @@ File.makeDirectory(out_path);
 
 
 if ( channel_order == "RGB" && channels == 3) {
-	print("ok");
+	print("Data has " + channels + " color channels");
+	print("You chose a channel format of: " + channel_order);
 
 	// extract blue
 	selectWindow(data);
@@ -76,7 +77,8 @@ if ( channel_order == "RGB" && channels == 3) {
 
 
 } else if ( channel_order == "RG" && channels == 2) {
-	print("got it");
+	print("Data has " + channels + " color channels");
+	print("You chose a channel format of: " + channel_order);
 
 	// extract red
 	selectWindow(data);
@@ -101,7 +103,9 @@ if ( channel_order == "RGB" && channels == 3) {
 
 	
 } else {
-	exit("error message");
+	print("We could detect " + channels + " color channels");
+	print("You chose a channel format of: " + channel_order);
+	exit("error message: " + channels + " channels is not compatible with " +  channel_order);
 }
 
 
@@ -119,6 +123,8 @@ lab = watershed_via_seeds(mask, seeds);
 run("Select None");
 saveAs("Tiff", out_path + "Labels.tif");
 
+// we are done
+print("All done");
 
 exit
 
