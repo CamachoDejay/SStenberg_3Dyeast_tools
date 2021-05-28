@@ -100,6 +100,8 @@ setBatchMode(false);
 selectWindow("Labels");
 
 
+save_and_leave("lab", directory, "lab.tif");
+
 function findFocus(window_title, focus_metric, do_plot) {
 /*
  As of this moment this function can only handle the overal intensity approximation,
@@ -154,5 +156,14 @@ function stackIntensity(window_title) {
 	run("Close");
 	return intVal;
 
+}
+
+function save_and_leave(window_title, folder2use, tif_title){
+
+	selectWindow(window_title);
+	saveAs("Tiff", folder2use + tif_title);
+	selectWindow(tif_title);
+	rename(window_title);
+	
 }
 
