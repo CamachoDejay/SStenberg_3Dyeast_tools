@@ -34,7 +34,7 @@ macro "save_labels" {
 
 function run_out_folder(dir2use) {
 
-	if (!contains_Blue_gradient_tif(dir2use)) {
+	if (!contains_Seeds_tif(dir2use)) {
 	 	list_folder = listFolder(dir2use);
 		// loops to navigate into each directory from the main one
 		for (i=0; i<list_folder.length; i++)
@@ -59,14 +59,14 @@ function run_out_folder(dir2use) {
 
 
 
-function contains_Blue_gradient_tif(dir) {
+function contains_Seeds_tif(dir) {
 // check if any file in the dir ends with ".tif"
     list = getFileList(dir);
      
     for (i=0; i<list.length; i++) {
     	list_element = list[i];
     	// look for tif files
-        if (endsWith(list[i], "Blue_gradient.tif")){
+        if (endsWith(list[i], "Seeds.tif")){
         	return true;
         }
            
