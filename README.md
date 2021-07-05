@@ -1,14 +1,14 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # Simon Stenberg 3D yeast tools
-ImageJ macro tools for Simon Stenberg to assist him in his yeast segmentation and quantification
 
+ImageJ macro tools for Simon Stenberg to assist him in his yeast segmentation and quantification
 
 ## IJ Macros
 
 ### Segmentation
 
-* Simon_yeast_segementation.ijm: The purpose of this macro is to segment yeast cells from 3 or 2 color images. As further post-processing, the algorithm tries to suggest good seeds that can be used later on to separate touching objects via watershed. 
+* [Simon_yeast_segementation.ijm](./IJ_macros/Day_1_IntroSimon_yeast_segmentation.ijm): The purpose of this macro is to segment yeast cells from 3 or 2 color images. As further post-processing, the algorithm tries to suggest good seeds that can be used later on to separate touching objects via watershed.
 
 * Simon_mito_segmentation.ijm: The purpose of this macro is to segment mitochondria from 3 or 2 color images. The user must select the mitochondria color channel and then segmentation takes place, taking advantage of 3D filtering.
 
@@ -24,8 +24,6 @@ In the imaging conditions used in this study, separating single yeast cells from
 
 ### Save labels after the watershed
 
-Once you are happy with the seeds then you can save the output after the watershed, which is a label image/volume. This will be used later on for the calculation of mitochondria properties per yeast cell. To do so run the macro: 
+Once you are happy with the seeds then you can save the output after the watershed, which is a label image/volume. This will be used later on for the calculation of mitochondria properties per yeast cell. To do so run the macro:
 
 * save_labels.ijm
-
-
