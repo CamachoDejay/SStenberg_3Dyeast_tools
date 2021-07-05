@@ -8,7 +8,7 @@ ImageJ macro tools for Simon Stenberg to assist him in his yeast segmentation an
 
 ### Segmentation
 
-* [Simon_yeast_segementation.ijm](./IJ_macros/Day_1_IntroSimon_yeast_segmentation.ijm): The purpose of this macro is to segment yeast cells from 3 or 2 color images. As further post-processing, the algorithm tries to suggest good seeds that can be used later on to separate touching objects via watershed.
+* [Simon_yeast_segementation.ijm](./IJ_macros): The purpose of this macro is to segment yeast cells from 3 or 2 color images. As further post-processing, the algorithm tries to suggest good seeds that can be used later on to separate touching objects via watershed.
 
 * Simon_mito_segmentation.ijm: The purpose of this macro is to segment mitochondria from 3 or 2 color images. The user must select the mitochondria color channel and then segmentation takes place, taking advantage of 3D filtering.
 
