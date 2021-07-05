@@ -1,4 +1,4 @@
-//  The purpose of this program is to segment the yeast cells from Simon,
+//  The purpose of this program is to segment the mitochondria in yeast cells from Simon,
 // files are stored in an output folder
 //
 //	Author: Rafael Camacho
