@@ -1,6 +1,6 @@
 function [body_i,mito_i] = extract_bodies(cell_BW, mito_BW)
-%EXTRACT_BODY Summary of this function goes here
-%   Detailed explanation goes here
+%EXTRACT_BODY extracts a particular bodie form a larger image, basically we
+%crop all that is not needed.
 stats = regionprops3(cell_BW,'BoundingBox');
 
 

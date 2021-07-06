@@ -1,7 +1,6 @@
 function [stats_mito, M] = mito_props(M, voxel_size)
-%MITO_PROPS Summary of this function goes here
-%   Detailed explanation goes here
-
+%MITO_PROPS get shape descriptor of each mithocondria (snake-like) in
+%the binary image
     
 %     sM = smooth_mito(M, voxel_size);
 %     

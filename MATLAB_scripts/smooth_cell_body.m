@@ -1,6 +1,6 @@
 function [B] = smooth_cell_body(B)
-%SMOOTH_CELL_BODY Summary of this function goes here
-%   Detailed explanation goes here
+%SMOOTH_CELL_BODY soft smooth of the cell body, we can not do it much in
+%here as a daughter cell might be present.
 
 assert(islogical(B),'input should be binary image');
 size_test = size(B) > [14, 14 ,8];

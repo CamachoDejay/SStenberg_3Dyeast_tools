@@ -1,6 +1,5 @@
 function [T_out, M] = get_mom_props(mom, dau, mito, voxel_size)
-%GET_MOM_PROPS Summary of this function goes here
-%   Detailed explanation goes here
+%GET_MOM_PROPS get shape descriptors of the mother cell
 
 % only look at mito in mother cell
 mito = and(mom,mito);

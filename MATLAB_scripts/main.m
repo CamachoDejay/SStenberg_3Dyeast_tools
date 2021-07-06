@@ -2,6 +2,11 @@
 %   github: camachodejay
 %   date:   2019 - 07 - 03
 %   current address: Centre for cellular imaging - G�teborgs universitet
+% 
+%   This is the main function to run. It first finds all subfolder of a
+%   directory that contain the expected information and then iterates of
+%   each one of them. For an explanation of the output file and pipeline
+%   have a look at: https://github.com/CamachoDejay/SStenberg_3Dyeast_tools
 
 function main()
 

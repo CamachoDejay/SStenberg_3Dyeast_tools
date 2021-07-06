@@ -1,6 +1,5 @@
 function [ Folders ] = subFolderList( main_PathName )
 %SUBFOLDERLIST Finds all folders in a directory
-%   Detailed explanation goes here
 
 % Find all folders in the directory
 % Folders = dir([main_PathName '/*.*']);

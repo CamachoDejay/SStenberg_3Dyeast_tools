@@ -1,6 +1,6 @@
 function [BW] = extra_smooth(BW, voxel_size)
-%EXTRA_SMOOTH Summary of this function goes here
-%   Detailed explanation goes here
+%EXTRA_SMOOTH smooths a 3D volume which we know should be elliptical in
+%nature
     
     original_size = size(BW);
     norm_vox = voxel_size./voxel_size(1);

@@ -1,6 +1,9 @@
 function [mother, daughter, Labels] = split_mother_daughter(B, voxel_size, scale, view_3d)
-%SPLIT_MOTHER_DAUGHTER Summary of this function goes here
-%   Detailed explanation goes here
+%SPLIT_MOTHER_DAUGHTER if we detect that a daughter cell is present then we
+%try to slip the body in two via waterched. If you are new to programming
+%notice that this is a recursive function, meainng that it calls itself
+%under some conditions.
+
 norm_vox = voxel_size./voxel_size(1);
 norm_vox = norm_vox * scale;
 new_pix = round(size(B) ./ [norm_vox(3), norm_vox(3), norm_vox(1)]);

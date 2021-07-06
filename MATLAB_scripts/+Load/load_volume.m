@@ -1,6 +1,7 @@
 function [vol,  voxel_size] = load_volume(tif2load)
-%LOAD_VOLUME Summary of this function goes here
-    %   Detailed explanation goes here
+%LOAD_VOLUME helper function to load the image adata and voxel size
+%(metadata)
+    
     reader = bfGetReader(tif2load);
     % get the global meta data
     globalMeta = reader.getGlobalMetadata;

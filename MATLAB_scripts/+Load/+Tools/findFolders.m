@@ -1,7 +1,6 @@
 function list = findFolders (main_dir)
-%FINDFOLDERS gets a list of all folders that start their name with
-%'h5files'
-
+%FINDFOLDERS gets a list of all folders that have the right information
+%inside, in this case a label and mito segmentation image.
    
     if run_conditional_name(main_dir)
         list = {main_dir};
