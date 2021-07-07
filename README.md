@@ -4,6 +4,26 @@
 
 ImageJ macro tools for Simon Stenberg to assist him in his yeast segmentation and quantification
 
+## General logic of the image processing workflow
+
+### Segmentation of yeast cells
+
+The images are loaded and a [difference of Gaussians (DoG)](https://en.wikipedia.org/wiki/Difference_of_Gaussians) filter is used to enhance the structures of interest. In this case ```sigma_1 = [4, 4, 2]``` pixels in x,y,z, and ```sigma_2 = [5.66, 5.66, 2.8]``` pixels in x,y,z.
+
+To improve on the segmentation quality, we calculate the 3D gradient of the DoG filtered images. For segmentation, we use the triangle algorithm. For post-processing, we fill holes present in the output mask.
+
+### Automated suggestion of seeds for the subsequent watershed in yeast segmentation
+
+Segmented masks of yeast cells are post-processed to suggest seeds that can then be used during watershed to separated touching objects. This is based on morphological operations via [MorphoLibJ](https://imagej.net/plugins/morpholibj#installation).
+
+The steps are (i) Erosion of a spherical element with radius ```[4, 4, 2]```, followed by (ii) morphological-opening with a spherical element of radius ```[7, 7, 3]```.
+
+### Segmentation of mithocondria
+
+The images are loaded and a [difference of Gaussians (DoG)](https://en.wikipedia.org/wiki/Difference_of_Gaussians) filter is used to enhance the structures of interest. In this case ```sigma_1 = [2, 2, 1]``` pixels in x,y,z, and ```sigma_2 = [2.83, 2.83, 1.414]``` pixels in x,y,z.
+
+To improve on the segmentation quality, we calculate the 3D median filter ```[2, 2, 1]``` of the DoG filtered images. For segmentation, we use the otsu algorithm.
+
 ## IJ Macros
 
 ### Dependencies
